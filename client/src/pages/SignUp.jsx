@@ -8,19 +8,19 @@ const SignUp = () => {
       <form className="flex flex-col gap-4">
         <input
           type="text"
-          placeholder="username"
+          placeholder="Username"
           className="border p-3 rounded-lg"
           id="usernmae"
         />
         <input
           type="email"
-          placeholder="email"
+          placeholder="Email"
           className="border p-3 rounded-lg"
           id="email"
         />
         <input
           type="text"
-          placeholder="password"
+          placeholder="Password"
           className="border p-3 rounded-lg"
           id="password"
         />
