@@ -10,8 +10,7 @@ export const test = (req,res)=>{
 }
 
 export const updateUser = async (req,res,next)=>{
-    console.log(req.user);
-    console.log(req.params.id);
+    
     if(req.user.id !== req.params.id) {
         return next(errorHandler(401,"Not authorized to update or id is incorrect"))
     };
@@ -29,6 +28,18 @@ export const updateUser = async (req,res,next)=>{
 
         const {password, ...rest} = updateUser._doc;
         res.status(201).json(rest);
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const deleteUser = async(req,res,next)=>{
+    if(req.user.id !== req.params.id){
+        return next(errorHandler(401,"Not authorized to delete or id is incorrect"))
+    }
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.clearCookie('access_token').status(200).json("User deleted"); 
     } catch (error) {
         next(error)
     }
