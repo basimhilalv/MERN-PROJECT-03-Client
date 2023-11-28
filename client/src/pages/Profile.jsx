@@ -1,25 +1,115 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useRef } from "react";
+import {
+  getDownloadURL,
+  ref,
+  getStorage,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../fireBase";
 
 const Profile = () => {
-  const {currentUser} = useSelector((state) => state.user)
+  const fileRef = useRef(null);
+  const { currentUser } = useSelector((state) => state.user);
+  const [file, setFile] = useState(undefined);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileError, setFileError] = useState(false);
+  const [formData, setFormData] = useState({});
+  console.log(formData);
+  console.log(filePerc);
+  console.log(fileError);
+  //firebase storage
+  // allow read;
+  //       allow write:if
+  //       request.resource.size < 2 * 1024 * 1024 &&
+  //       request.resource.contentType.matches('image/.*')
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+  const handleFileUpload = (file) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setFilePerc(Math.round(progress));
+      },
+      (error) => {
+        setFileError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+          setFormData({ ...formData, avatar: downloadURL })
+        );
+      }
+    );
+  };
   return (
     <div className="p-3 max-w-lg mx-auto bg-opacity-50 drop-shadow-2xl rounded-xl bg-blue-900 mt-12 ">
-      <h1 className="text-3xl font-semibold text-blue-200 text-center my-7">Profile</h1>
+      <h1 className="text-3xl font-semibold text-blue-200 text-center my-7">
+        Profile
+      </h1>
       <form className="flex flex-col max-w-sm mx-auto">
-        <img src={currentUser.avatar} alt="avatar" 
-        className="border-solid border-blue-200 border-4 rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2" />
-        <input type="text" id="username" placeholder="Username" 
-        className="border-none focus:outline-none text-blue-300 bg-opacity-25 bg-blue-200 p-3 rounded-lg my-2 mt-8" />
-        <input type="email" id="email" placeholder="Email" 
-        className="border-none focus:outline-none text-blue-300 bg-opacity-25 bg-blue-200 p-3 rounded-lg my-2" />
-        <input type="password" id="password" placeholder="Password" 
-        className="border-none focus:outline-none text-blue-300 bg-opacity-25 bg-blue-200 p-3 rounded-lg my-2" />
-        <button className="bg-blue-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">Update</button>
+        <input
+          onChange={(e) => setFile(e.target.files[0])}
+          type="file"
+          ref={fileRef}
+          hidden
+          accept="image/*"
+        />
+        <img
+          onClick={() => fileRef.current.click()}
+          src={formData.avatar || currentUser.avatar}
+          alt="avatar"
+          className="border-solid border-blue-200 border-4 rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
+        />
+        <p className="text-sm self-center">
+          {fileError ? (
+            <span>Error Image Upload</span>
+          ) : filePerc > 0 && filePerc < 100 ? (
+            <span>{`uploading ${filePerc}%`}</span>
+          ) : filePerc === 100 ? (
+            <span>Image uploaded successfully</span>
+          ) : (
+            ""
+          )}
+        </p>
+        <input
+          type="text"
+          id="username"
+          placeholder="Username"
+          className="border-none focus:outline-none text-blue-300 bg-opacity-25 bg-blue-200 p-3 rounded-lg my-2 mt-8"
+        />
+        <input
+          type="email"
+          id="email"
+          placeholder="Email"
+          className="border-none focus:outline-none text-blue-300 bg-opacity-25 bg-blue-200 p-3 rounded-lg my-2"
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          className="border-none focus:outline-none text-blue-300 bg-opacity-25 bg-blue-200 p-3 rounded-lg my-2"
+        />
+        <button className="bg-blue-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
+          Update
+        </button>
       </form>
       <div className="flex justify-between mt-1 mx-12">
-      <span className="text-red-400 bg-opacity-50 rounded-lg text-center  px-2 text-sm p-1 cursor-pointer ">Delete your account</span>
-      <span className="text-red-400 bg-opacity-50 rounded-lg text-center  text-sm p-1 px-2 cursor-pointer ">Sign Out</span>
+        <span className="text-red-400 bg-opacity-50 rounded-lg text-center  px-2 text-sm p-1 cursor-pointer ">
+          Delete your account
+        </span>
+        <span className="text-red-400 bg-opacity-50 rounded-lg text-center  text-sm p-1 px-2 cursor-pointer ">
+          Sign Out
+        </span>
       </div>
     </div>
   );
