@@ -14,7 +14,6 @@ export const userSlice = createSlice({
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-        console.log(action.payload)
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
@@ -36,24 +35,39 @@ export const userSlice = createSlice({
       state.loading = false;
     },
     deleteUserStart: (state) => {
-        state.loading = true;
-      },
-      deleteUserSuccess: (state) => {
-        state.currentUser = null;
-        state.loading = false;
-        state.error = null;
-      },
-      deleteUserfailure: (state, action) => {
-        state.error = action.payload;
-        state.loading = false;
-      },
+      state.loading = true;
+    },
+    deleteUserSuccess: (state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = null;
+    },
+    deleteUserfailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    signoutUserStart: (state) => {
+      state.loading = true;
+    },
+    signoutUserSuccess: (state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = null;
+    },
+    signoutUserfailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
 export const {
-    deleteUserStart,
-    deleteUserSuccess,
-    deleteUserfailure,
+  signoutUserStart,
+  signoutUserSuccess,
+  signoutUserfailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserfailure,
   updateUserStart,
   updateUserfailure,
   UpdateUserSuccess,
