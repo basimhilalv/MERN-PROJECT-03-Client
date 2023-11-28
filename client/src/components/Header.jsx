@@ -1,8 +1,10 @@
 import React from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Header() {
+  const {currentUser} = useSelector(state => state.user)
   return (
     <header className="bg-blue-900 shadow-md bg-opacity-50">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -31,8 +33,9 @@ function Header() {
             About
           </li>
           </Link>
-          <Link to='/sign-in'>
-          <li className="text-blue-200 hover:text-blue-100">Sign in</li>
+          
+          <Link to='/profile'>
+            { currentUser ? (<img className="rounded-full h-7 w-7 object-cover " src={currentUser.avatar} alt="avatar"/>):(<li className="text-blue-200 hover:text-blue-100">Sign in</li>) }
           </Link>
         </ul>
       </div>
