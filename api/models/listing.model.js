@@ -25,7 +25,7 @@ const listingSchema = mongoose.Schema({
         type:Number,
         required:true
     },
-    compatibility:{
+    devices:{
         type:Array,
         required:true,
     },
