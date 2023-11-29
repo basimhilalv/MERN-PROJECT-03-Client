@@ -2,12 +2,8 @@ import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import User from "../models/user.model.js";
+import Listing from "../models/listing.model.js";
 
-export const test = (req,res)=>{
-    res.json({
-        message:"Hiiiii basiii"
-    })
-}
 
 export const updateUser = async (req,res,next)=>{
     
@@ -42,5 +38,18 @@ export const deleteUser = async(req,res,next)=>{
         res.clearCookie('access_token').status(200).json("User deleted"); 
     } catch (error) {
         next(error)
+    }
+}
+
+export const showListings = async(req,res,next)=>{
+    if(req.user.id !== req.params.id) {
+        return next(errorHandler(401,"Not authorized to continue"))
+    }else{
+        try {
+            const data = await Listing.findOne({userRef:req.params.id})
+            res.status(200).json(data);
+        } catch (error) {
+            next(error)
+        }
     }
 }
