@@ -1,17 +1,83 @@
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import React, { useState } from "react";
+import { app } from "../fireBase";
 
 const CreateListing = () => {
-  const [formData, setFormData] = useState({});
-  const [devices, setDevices] = useState([]);
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+    devices: [],
+  });
   console.log(formData);
-  console.log(devices);
   console.log(images);
+  const handleImageSubmit = (e) => {
+    
+    if (images.length > 0 && images.length + formData.imageUrls.length < 7) {
+        setLoading(true);
+        const promise = [];
+      for (let i = 0; i < images.length; i++) {
+        promise.push(storeImage(images[i]));
+      }
+      Promise.all(promise)
+        .then((urls) => {
+          setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.concat(urls),
+          });
+          setImageError(false);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setImageError("Image upload failed (maximum size 2MB)");
+        });
+    } else {
+      setImageError("you can only upload maxiumum 6 images");
+      setLoading(false);
+    }
+  };
+
+  const storeImage = async (file) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+  };
   const handleDeviceChange = (e) => {
     if (e.target.checked) {
-      setDevices([...devices, e.target.value]);
+      setFormData({
+        ...formData,
+        devices: [...formData.devices, e.target.value],
+      });
     } else {
-      setDevices(devices.filter((device) => device !== e.target.value));
+      setFormData({
+        ...formData,
+        devices: formData.devices.filter((device) => device !== e.target.value),
+      });
     }
   };
   const handleChange = (e) => {
@@ -19,6 +85,13 @@ const CreateListing = () => {
       ...formData,
       [e.target.id]: e.target.value,
     });
+  };
+
+  const handleDeleteImage = (index) => {
+    setFormData({
+        ...formData,
+        imageUrls:formData.imageUrls.filter((imgurl) => imgurl !== index)
+    })
   };
   const handleSubmit = () => {};
 
@@ -248,16 +321,45 @@ const CreateListing = () => {
             <input
               type="file"
               id="images"
-              onChange={(e)=> setImages(e.target.files)}
+              onChange={(e) => setImages(e.target.files)}
               className="rounded-lg bg-opacity-25 p-3 bg-blue-200"
               accept="image/*"
               multiple
             />
-            <button className="bg-transparent border-green-500 border-solid border-2 font-semibold text-blue-200 rounded-lg p-3">
-              Upload
+            <button
+              type="button"
+              onClick={handleImageSubmit}
+              className="bg-transparent border-green-500 border-solid border-2 font-semibold text-blue-200 rounded-lg p-3"
+            >
+              {loading ? "Uploading..." : "UPLOAD"}
             </button>
           </div>
-
+          <p className="text-red-300 text-sm">{imageError && imageError}</p>
+          {formData.imageUrls.length > 0 &&
+            formData.imageUrls.map((url) => {
+              console.log(url);
+              return (
+                <div
+                  key={url}
+                  className="flex justify-between items-center text-center bg-blue-100 p-3 rounded-lg bg-opacity-25"
+                >
+                  <img
+                    src={url}
+                    alt="listings_pics"
+                    className="w-40 h-20 rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleDeleteImage(url);
+                    }}
+                    className="bg-red-600 h-8 w-20 uppercase text-white font-semibold rounded-lg"
+                  >
+                    Delete
+                  </button>
+                </div>
+              );
+            })}
           <button className=" bg-green-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 text-center">
             Create Listing
           </button>
