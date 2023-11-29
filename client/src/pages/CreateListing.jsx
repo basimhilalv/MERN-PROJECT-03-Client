@@ -6,10 +6,16 @@ import {
 } from "firebase/storage";
 import React, { useState } from "react";
 import { app } from "../fireBase";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const CreateListing = () => {
+    const navigate= useNavigate();
+    const {currentUser} = useSelector((state)=>state.user)
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [listLoading,setListLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -87,13 +93,44 @@ const CreateListing = () => {
     });
   };
 
-  const handleDeleteImage = (index) => {
+  const handleDeleteImage = (url) => {
     setFormData({
         ...formData,
-        imageUrls:formData.imageUrls.filter((imgurl) => imgurl !== index)
+        imageUrls:formData.imageUrls.filter((imgurl) => imgurl !== url)
     })
   };
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    
+    e.preventDefault();
+    try {
+        if(formData.imageUrls.length < 1){
+           return setError("Upload atleast 1 image to continue");
+        }
+        if(formData.discountPrice > formData.regularPrice){
+            return setError("Discount Price must be less than regular price");
+        }
+        setListLoading(true);
+        const res = await fetch("/api/listing/create",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+            },
+            body:JSON.stringify({...formData, userRef:currentUser})
+        });
+        const data = await res.json();
+        if(data.success === false){
+            setError(data.message);
+            setListLoading(false);
+            return;
+        }
+        setError(null)
+        setListLoading(false)
+        navigate('/');
+    } catch (error) {
+        setListLoading(false);
+        setError(err.message);
+    }
+  };
 
   return (
     <main className=" bg-blue-900 p-3 rounded-xl drop-shadow-2xl bg-opacity-50 max-w-4xl mx-auto my-7">
@@ -108,7 +145,7 @@ const CreateListing = () => {
             className="border-none bg-blue-100 bg-opacity-25 text-blue-100 focus:outline-none p-3 rounded-lg"
             id="name"
             maxLength="62"
-            minLength="10"
+            minLength="3"
             onChange={handleChange}
             required
           />
@@ -117,8 +154,8 @@ const CreateListing = () => {
             placeholder="Add Description..."
             className="border-none bg-blue-100 bg-opacity-25 text-blue-100 focus:outline-none p-3 rounded-lg"
             id="description"
-            maxLength="62"
-            minLength="10"
+            maxLength="150"
+            minLength="3"
             onChange={handleChange}
             required
           ></textarea>
@@ -128,7 +165,7 @@ const CreateListing = () => {
             className="border-none bg-blue-100 text-blue-100 bg-opacity-25 p-3 focus:outline-none rounded-lg"
             id="created"
             maxLength="62"
-            minLength="10"
+            minLength="3"
             onChange={handleChange}
             required
           />
@@ -138,7 +175,7 @@ const CreateListing = () => {
             className="border-none p-3 bg-blue-100 text-blue-100 bg-opacity-25 focus:outline-none rounded-lg"
             id="seller"
             maxLength="62"
-            minLength="10"
+            minLength="3"
             onChange={handleChange}
             required
           />
@@ -360,9 +397,10 @@ const CreateListing = () => {
                 </div>
               );
             })}
-          <button className=" bg-green-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 text-center">
-            Create Listing
+          <button disabled={loading || listLoading} type="submit" className=" bg-green-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 text-center">
+            {listLoading ? "Creating...":"Create Listing"}
           </button>
+          {error && <p className="text-red-500 text-sm mt-5"> {error} </p> }
         </div>
       </form>
     </main>

@@ -5,5 +5,5 @@
 body{
     background-color: rgb(26, 27, 26);
     background-image: url(./assets/body-bg-space-wallpaper01.jpg);
-    background-size: cover;
+    background-size:auto;
 }
