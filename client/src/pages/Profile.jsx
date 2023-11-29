@@ -11,7 +11,7 @@ import {
   updateUserfailure,
   deleteUserStart,
   deleteUserSuccess,
-  deleteUserfailure
+  deleteUserfailure,
 } from "../redux/user/userSlice";
 import {
   getDownloadURL,
@@ -20,6 +20,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../fireBase";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const fileRef = useRef(null);
@@ -30,7 +31,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
   const [updateDone, setUpdateDone] = useState(false);
   const dispatch = useDispatch();
-  console.log(currentUser)
+  console.log(currentUser);
   // console.log(formData);
   // console.log(filePerc);
   // console.log(fileError);
@@ -97,36 +98,36 @@ const Profile = () => {
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
-        method:'DELETE',
-      })
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserfailure(data.message));
         return;
       }
-      dispatch(deleteUserSuccess(data))
+      dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserfailure(error.message))
+      dispatch(deleteUserfailure(error.message));
     }
   };
 
   const handleSignOut = async () => {
     try {
-      dispatch(signoutUserStart())
-      const res = await fetch('/api/auth/sign-out');
+      dispatch(signoutUserStart());
+      const res = await fetch("/api/auth/sign-out");
       const data = await res.json();
-      if(data.success === false){
+      if (data.success === false) {
         dispatch(deleteUserfailure(data.message));
         return;
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(signoutUserfailure(error.message))
+      dispatch(signoutUserfailure(error.message));
     }
-  }
+  };
   return (
-    <div className="p-3 max-w-lg mx-auto bg-opacity-50 drop-shadow-2xl rounded-xl bg-blue-900 mt-12 ">
+    <div className="p-3 max-w-lg mx-auto bg-opacity-50 drop-shadow-2xl rounded-xl bg-blue-900 mt-8 ">
       <h1 className="text-3xl font-semibold text-blue-200 text-center my-7">
         Profile
       </h1>
@@ -181,6 +182,12 @@ const Profile = () => {
         <button className="bg-blue-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link
+          className="bg-green-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 text-center"
+          to={"/create-listing"}
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-1 mx-12">
         <span
@@ -189,7 +196,10 @@ const Profile = () => {
         >
           Delete your account
         </span>
-        <span onClick={handleSignOut} className="text-red-400 bg-opacity-50 rounded-lg text-center  text-sm p-1 px-2 cursor-pointer ">
+        <span
+          onClick={handleSignOut}
+          className="text-red-400 bg-opacity-50 rounded-lg text-center  text-sm p-1 px-2 cursor-pointer "
+        >
           Sign Out
         </span>
       </div>

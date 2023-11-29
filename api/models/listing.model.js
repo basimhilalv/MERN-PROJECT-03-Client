@@ -26,11 +26,19 @@ const listingSchema = mongoose.Schema({
         required:true
     },
     compatibility:{
-        type:String,
+        type:Array,
         required:true,
     },
     offer:{
-        type:String,
+        type:Boolean,
+        required:true,
+    },
+    forSale:{
+        type:Boolean,
+        required:true,
+    },
+    forRent:{
+        type:Boolean,
         required:true,
     },
     imageUrls:{
