@@ -23,6 +23,9 @@ const UpdateListing = () => {
     description:"",
     seller:"",
     created:"",
+    offer:false,
+    forRent:false,
+    forSale:false,
     regularPrice:0,
     discountPrice:0,
     imageUrls: [],
@@ -107,10 +110,10 @@ const UpdateListing = () => {
     }
   };
   const handleChange = (e) => {
-    if(e.target.type==="radio" && e.target.checked){
+    if(e.target.type==="checkbox"){
         setFormData({
             ...formData,
-            [e.target.name]:e.target.value,
+            [e.target.id]:e.target.checked,
         })
     }else{
         setFormData({
@@ -285,7 +288,48 @@ const UpdateListing = () => {
           </div>
         </div>
         <div className="flex flex-col flex-1 mx-3 gap-3">
-          <div className="bg-blue-100 bg-opacity-25  rounded-lg p-3">
+        <div className="flex bg-blue-100 bg-opacity-25 rounded-lg text-blue-100 flex-wrap justify-between gap-3 p-3 ">
+            <div>
+              <label>
+                {" "}
+                <input
+                  type="checkbox"
+                  checked={formData.forSale}
+                  onChange={handleChange}
+                  name="forSale"
+                  id="forSale"
+                />{" "}
+                For Sale
+              </label>
+            </div>
+            <div>
+              <label>
+                {" "}
+                <input
+                  type="checkbox"
+                  checked={formData.forRent}
+                  onChange={handleChange}
+                  name="forRent"
+                  id="forRent"
+                />{" "}
+                For Rent (Monthly)
+              </label>
+            </div>
+            <div>
+              <label>
+                {" "}
+                <input
+                  type="checkbox"
+                  checked={formData.offer}
+                  onChange={handleChange}
+                  name="offer"
+                  id="offer"
+                />{" "}
+                Offer
+              </label>
+            </div>
+          </div>
+          {/* <div className="bg-blue-100 bg-opacity-25  rounded-lg p-3">
             <label className="text-blue-100 flex flex-row ">
               Offer Applicable :
               <input
@@ -355,23 +399,8 @@ const UpdateListing = () => {
               />{" "}
               No
             </label>
-          </div>
+          </div> */}
           {/* Rent or sale  */}
-          {/* <div className="flex bg-blue-100 bg-opacity-25 rounded-lg text-blue-100 flex-wrap gap-3 p-3 ">
-              <div>
-                <label for="forSale">
-                  {" "}
-                  <input type="checkbox" onChange={handleChange} value='true' name="forSale" id="forSale" /> For Sale
-                </label>
-              </div>
-              <div>
-                <label for="forSale">
-                  {" "}
-                  <input type="checkbox" onChange={handleChange} value='true' name="forRent" id="forRent" /> For Rent
-                  (Per Month)
-                </label>
-              </div>
-            </div> */}
 
           <div className="flex flex-row gap-3 text-blue-200">
             <input
@@ -446,7 +475,7 @@ const UpdateListing = () => {
             type="submit"
             className=" bg-green-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 text-center"
           >
-            {listLoading ? "Creating..." : "Create Listing"}
+            {listLoading ? "Updating..." : "Update Listing"}
           </button>
           {error && <p className="text-red-500 text-sm mt-5"> {error} </p>}
         </div>

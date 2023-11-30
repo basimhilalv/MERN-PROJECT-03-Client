@@ -10,24 +10,26 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const CreateListing = () => {
-    const navigate= useNavigate();
-    const {currentUser} = useSelector((state)=>state.user)
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [listLoading,setListLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(false);
   const [error, setError] = useState(null);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({
+    offer: false,
+    forRent: false,
+    forSale: false,
     imageUrls: [],
     devices: [],
   });
   console.log(formData);
   console.log(images);
   const handleImageSubmit = (e) => {
-    
     if (images.length > 0 && images.length + formData.imageUrls.length < 7) {
-        setLoading(true);
-        const promise = [];
+      setLoading(true);
+      const promise = [];
       for (let i = 0; i < images.length; i++) {
         promise.push(storeImage(images[i]));
       }
@@ -87,48 +89,55 @@ const CreateListing = () => {
     }
   };
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+    if (e.target.type === "checkbox") {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.checked,
+      });
+    }else {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
   };
 
   const handleDeleteImage = (url) => {
     setFormData({
-        ...formData,
-        imageUrls:formData.imageUrls.filter((imgurl) => imgurl !== url)
-    })
+      ...formData,
+      imageUrls: formData.imageUrls.filter((imgurl) => imgurl !== url),
+    });
   };
   const handleSubmit = async (e) => {
-    
     e.preventDefault();
     try {
-        if(formData.imageUrls.length < 1){
-           return setError("Upload atleast 1 image to continue");
-        }
-        if(formData.discountPrice > formData.regularPrice){
-            return setError("Discount Price must be less than regular price");
-        }
-        setListLoading(true);
-        const res = await fetch("/api/listing/create",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-            },
-            body:JSON.stringify({...formData, userRef:currentUser})
-        });
-        const data = await res.json();
-        if(data.success === false){
-            setError(data.message);
-            setListLoading(false);
-            return;
-        }
-        setError(null)
-        setListLoading(false)
-        navigate(`/listings/${data._id}`);
-    } catch (error) {
+      setError(null);
+      if (formData.imageUrls.length < 1) {
+        return setError("Upload atleast 1 image to continue");
+      }
+      if (formData.discountPrice > formData.regularPrice) {
+        return setError("Discount Price must be less than regular price");
+      }
+      setListLoading(true);
+      const res = await fetch("/api/listing/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData, userRef: currentUser }),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        setError(data.message);
         setListLoading(false);
-        setError(err.message);
+        return;
+      }
+      setError(null);
+      setListLoading(false);
+      navigate(`/listings/${data._id}`);
+    } catch (error) {
+      setListLoading(false);
+      setError(err.message);
     }
   };
 
@@ -249,7 +258,7 @@ const CreateListing = () => {
           </div>
         </div>
         <div className="flex flex-col flex-1 mx-3 gap-3">
-          <div className="bg-blue-100 bg-opacity-25  rounded-lg p-3">
+          {/* <div className="bg-blue-100 bg-opacity-25  rounded-lg p-3">
             <label className="text-blue-100 flex flex-row ">
               Offer Applicable :
               <input
@@ -313,23 +322,49 @@ const CreateListing = () => {
               />{" "}
               No
             </label>
-          </div>
-          {/* Rent or sale  */}
-          {/* <div className="flex bg-blue-100 bg-opacity-25 rounded-lg text-blue-100 flex-wrap gap-3 p-3 ">
-            <div>
-              <label for="forSale">
-                {" "}
-                <input type="checkbox" onChange={handleChange} value='true' name="forSale" id="forSale" /> For Sale
-              </label>
-            </div>
-            <div>
-              <label for="forSale">
-                {" "}
-                <input type="checkbox" onChange={handleChange} value='true' name="forRent" id="forRent" /> For Rent
-                (Per Month)
-              </label>
-            </div>
           </div> */}
+          {/* Rent or sale  */}
+          <div className="flex bg-blue-100 bg-opacity-25 rounded-lg text-blue-100 flex-wrap justify-between gap-3 p-3 ">
+            <div>
+              <label>
+                {" "}
+                <input
+                  type="checkbox"
+                  onChange={handleChange}
+                  value="true"
+                  name="forSale"
+                  id="forSale"
+                />{" "}
+                For Sale
+              </label>
+            </div>
+            <div>
+              <label>
+                {" "}
+                <input
+                  type="checkbox"
+                  onChange={handleChange}
+                  value="true"
+                  name="forRent"
+                  id="forRent"
+                />{" "}
+                For Rent (Monthly)
+              </label>
+            </div>
+            <div>
+              <label>
+                {" "}
+                <input
+                  type="checkbox"
+                  onChange={handleChange}
+                  value="true"
+                  name="offer"
+                  id="offer"
+                />{" "}
+                Offer
+              </label>
+            </div>
+          </div>
 
           <div className="flex flex-row gap-3 text-blue-200">
             <input
@@ -397,10 +432,14 @@ const CreateListing = () => {
                 </div>
               );
             })}
-          <button disabled={loading || listLoading} type="submit" className=" bg-green-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 text-center">
-            {listLoading ? "Creating...":"Create Listing"}
+          <button
+            disabled={loading || listLoading}
+            type="submit"
+            className=" bg-green-800 my-2 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 text-center"
+          >
+            {listLoading ? "Creating..." : "Create Listing"}
           </button>
-          {error && <p className="text-red-500 text-sm mt-5"> {error} </p> }
+          {error && <p className="text-red-500 text-sm mt-5"> {error} </p>}
         </div>
       </form>
     </main>
