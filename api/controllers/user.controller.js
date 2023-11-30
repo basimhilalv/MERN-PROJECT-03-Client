@@ -46,7 +46,7 @@ export const showListings = async(req,res,next)=>{
         return next(errorHandler(401,"Not authorized to continue"))
     }else{
         try {
-            const data = await Listing.findOne({userRef:req.params.id})
+            const data = await Listing.find({userRef:req.params.id})
             res.status(200).json(data);
         } catch (error) {
             next(error)

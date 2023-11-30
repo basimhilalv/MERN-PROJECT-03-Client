@@ -30,6 +30,8 @@ const Profile = () => {
   const [fileError, setFileError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateDone, setUpdateDone] = useState(false);
+  const [listError, setListError] = useState(false);
+  const [userlist, setUserList] = useState([]);
   const dispatch = useDispatch();
   console.log(currentUser);
   // console.log(formData);
@@ -126,7 +128,26 @@ const Profile = () => {
       dispatch(signoutUserfailure(error.message));
     }
   };
+
+  const handleShowListing = async ()=>{
+    try {
+      setListError(false);
+      const res= await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if(data.success === false){
+        setListError(true);
+        return;
+      }
+      setListError(false);
+      setUserList(data);
+    } catch (error) {
+      setListError(true)
+    }
+  }
+
+  console.log(userlist)
   return (
+    
     <div className="p-3 max-w-lg mx-auto bg-opacity-50 drop-shadow-2xl rounded-xl bg-blue-900 mt-8 ">
       <h1 className="text-3xl font-semibold text-blue-200 text-center my-7">
         Profile
@@ -189,13 +210,16 @@ const Profile = () => {
           Create Listing
         </Link>
       </form>
-      <div className="flex justify-between mt-1 mx-12">
+      <div className="flex justify-between mt-1 mx-1">
         <span
           onClick={handleDeleteUser}
           className="text-red-400 bg-opacity-50 rounded-lg text-center  px-2 text-sm p-1 cursor-pointer "
         >
-          Delete your account
+          Delete Account
         </span>
+        <span onClick={handleShowListing} className="text-blue-200  rounded-lg  w-28">
+        Show Listings
+      </span>
         <span
           onClick={handleSignOut}
           className="text-red-400 bg-opacity-50 rounded-lg text-center  text-sm p-1 px-2 cursor-pointer "
@@ -205,6 +229,33 @@ const Profile = () => {
       </div>
       <p>{error ? error : ""}</p>
       <p>{updateDone ? "Updated successfully" : ""}</p>
+      <p>{listError ? "Error showing listings" : ''}</p>
+      <div>
+        {userlist && userlist.length > 0 && 
+          userlist.map((list)=>{
+            console.log(list._id);
+            return(
+              
+            <div key={list._id} className="bg-blue-100 drop-shadow-2xl hover:opacity-70  rounded-lg text-blue-200 bg-opacity-25 p-2 my-2 flex justify-between flex-row items-center">
+             
+             <Link to={`/listings/${list._id}`}>
+             <div className="flex">
+              <img src={list.imageUrls[0]} alt="listing_image" className="w-12 h-12 object-contain mr-3"/>
+              <p className="font-semibold truncate">{list.name}</p>
+              </div>
+            </Link>
+             
+             
+            <div className="flex flex-col">
+              <button className="text-red-400 font-semibold">DELETE</button>
+              <button className="text-green-400 font-semibold">EDIT</button>
+            </div>
+            </div>
+            
+           )
+          })
+        }
+      </div>
     </div>
   );
 };
