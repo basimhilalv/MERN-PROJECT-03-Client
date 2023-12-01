@@ -8,7 +8,7 @@ const ImageSlider = ({urls}) => {
       {urls.map((url) => (
         <SwiperSlide key={url}>
           <div
-            className="h-[550px]"
+            className="h-[400px]"
             style={{ background: `url(${url}) center no-repeat`, backgroundSize: 'cover' }}
           ></div>
         </SwiperSlide>
