@@ -134,10 +134,10 @@ const CreateListing = () => {
       }
       setError(null);
       setListLoading(false);
-      navigate(`/listings/${data._id}`);
+      navigate(`/listing/${data._id}`);
     } catch (error) {
       setListLoading(false);
-      setError(err.message);
+      setError(error.message);
     }
   };
 

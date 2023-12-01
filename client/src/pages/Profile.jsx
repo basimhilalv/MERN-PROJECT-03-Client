@@ -258,7 +258,7 @@ const Profile = () => {
                 key={list._id}
                 className="bg-blue-100 drop-shadow-2xl hover:opacity-70  rounded-lg text-blue-200 bg-opacity-25 p-2 my-2 flex justify-between flex-row items-center"
               >
-                <Link to={`/listings/${list._id}`}>
+                <Link to={`/listing/${list._id}`}>
                   <div className="flex">
                     <img
                       src={list.imageUrls[0]}
