@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
+import { useSelector } from "react-redux";
 import {
   FaCode,
   FaShoppingCart,
@@ -15,12 +16,15 @@ import { DiAndroid } from "react-icons/di";
 import { MdOutlineDone, MdCurrencyRupee } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import ImageSlider from "../components/ImageSlider";
+import Contact from "../components/Contact";
 const Listing = () => {
   SwiperCore.use([Navigation]);
   const params = useParams();
+  const { currentUser } = useSelector((state) => state.user);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [contact, setContact] = useState(false);
   useEffect(() => {
     const fetchList = async () => {
       try {
@@ -177,7 +181,12 @@ const Listing = () => {
                 </span>
               )}
             </p>
-            
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
+              <button onClick={()=>setContact(true)} className="bg-green-700 my-2 text-white rounded-lg uppercase p-2 hover:opacity-90">
+                Contact Seller
+              </button>
+            )}
+            {contact && <Contact listing={listing}/>}
           </div>
         </div>
       )}
