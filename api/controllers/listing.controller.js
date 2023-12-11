@@ -62,7 +62,7 @@ export const getAllListing = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 9;
     const startIndex = parseInt(req.query.startIndex) || 0;
-    
+
     let offer = req.query.offer;
     if (offer === undefined || offer === "false") {
       offer = { $in: [false, true] };
@@ -84,9 +84,9 @@ export const getAllListing = async (req, res, next) => {
 
     const list = await Listing.find({
       name: { $regex: searchTerm, $options: "i" },
-      offer,
-      rent,
-      sale,
+      offer:offer,
+      forRent:rent,
+      forSale:sale,
     })
       .sort({ [sort]: order })
       .limit(limit)
@@ -97,9 +97,7 @@ export const getAllListing = async (req, res, next) => {
   }
 };
 
-export const test = async (req,res,next)=>{
-    const list = await Listing.find();
-    res.json(list)
-}
-
-
+export const test = async (req, res, next) => {
+  const list = await Listing.find();
+  res.json(list);
+};
