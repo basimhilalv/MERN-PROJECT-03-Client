@@ -4,7 +4,7 @@ const Search = () => {
   return (
     <div className="flex flex-col mx-auto p-4">
       <div className="bg-blue-200 bg-opacity-25 flex flex-col  p-3 rounded-lg mx-auto">
-        <form className="flex flex-row justify-center gap-2 text-blue-100">
+        <form className="flex flex-col sm:flex-row justify-center gap-2 text-blue-100">
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -14,11 +14,11 @@ const Search = () => {
             />
           </div>
           <div className=" flex items-center gap-2 ">
-            <select name="" id="sort_order" className="rounded-lg p-2 bg-blue-100 text-blue-500 bg-opacity-25">
-              <option value="">Price High to Low</option>
-              <option value="">Price Low to High</option>
-              <option value="">Oldest</option>
-              <option value="">Latest</option>
+            <select name="" id="sort_order"   className="focus:outline-none rounded-lg p-2 bg-blue-100 text-blue-100 bg-opacity-25">
+              <option value="" className="bg-blue-400">Price High to Low</option>
+              <option value="" className="bg-blue-400">Price Low to High</option>
+              <option value="" className="bg-blue-400">Oldest</option>
+              <option value="" className="bg-blue-400">Latest</option>
             </select>
           </div>
           <div className="flex rounded-lg text-blue-100 flex-wrap items-center my-2 gap-2 ">
