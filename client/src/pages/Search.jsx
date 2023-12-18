@@ -86,10 +86,10 @@ const Search = () => {
     <div className="flex flex-col mx-auto p-4">
       <div className="bg-blue-200 bg-opacity-25 flex flex-col  p-3 rounded-lg mx-auto">
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row justify-center gap-2 text-blue-100">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:w-auto w-full">
             <input
               type="text"
-              className="p-2 rounded-lg bg-blue-100 bg-opacity-25 text-blue-200   border-none gap-2 focus:outline-none"
+              className="p-2 rounded-lg bg-blue-100 sm:w-auto w-full bg-opacity-25 text-blue-200   border-none gap-2 focus:outline-none"
               placeholder="Search..."
               value={searchData.searchTerm}
               onChange={handleChange}
@@ -101,7 +101,7 @@ const Search = () => {
               onChange={handleChange}
               name=""
               id="sort_order"
-              className="focus:outline-none rounded-lg p-2 bg-blue-100 text-blue-100 bg-opacity-25"
+              className=" sm:w-auto w-full focus:outline-none rounded-lg p-2 bg-blue-100 text-blue-100 bg-opacity-25"
             >
               <option value="regularPrice_desc" className="bg-blue-400">
                 Price High to Low
