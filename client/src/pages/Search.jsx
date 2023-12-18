@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Listing from "../components/listing";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ const Search = () => {
       setSearchData({ ...searchData, [e.target.id]: e.target.checked });
     }
     if (e.target.id === "sort_order") {
-      const order = e.target.value.split("_")[0] || "createdAt"
-      const sort = e.target.value.split("_")[1] || "desc"
+      const sort = e.target.value.split("_")[0] || "createdAt"
+      const order = e.target.value.split("_")[1] || "desc"
       setSearchData({
         ...searchData, sort, order
       })
@@ -166,7 +167,17 @@ const Search = () => {
           </button>
         </form>
       </div>
-      <div className="">Available Listings</div>
+      <div className="bg-blue-200 bg-opacity-25 flex flex-col p-3 m-4 rounded-lg justify-center mx-auto">
+        <div className="text-blue-200 flex font-bold text-center text-lg">
+        {!loading && listing.length === 0 && (
+          <p className="text-sm text-blue-200">No products available</p>
+        )}
+        {loading && (<p className="text-sm text-blue-200">Loading...</p>)}
+        </div>
+        <div className="flex flex-wrap justify-center">
+        {!loading && listing && listing.map((list)=><Listing list={list}/>) } 
+        </div>
+      </div>
     </div>
   );
 };
