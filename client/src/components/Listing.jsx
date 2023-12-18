@@ -2,18 +2,20 @@ import React from 'react'
 import { FaCode, FaShoppingCart  } from 'react-icons/fa';
 import { MdOutlineDone, MdCurrencyRupee } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
+import { Link } from 'react-router-dom';
 
 const Listing = ({list}) => {
     console.log(list)
   return (
 
     <div>
+        <Link to={`/listing/${list._id}`}>
         <div className="flex flex-col sm:flex-row mx-auto p-6 ">
-            <div className="rounded-lg">
+            <div className="h-68 w-48 rounded-lg overflow-hidden">
               <img
                 src={list.imageUrls[0]}
                 alt="gameCover"
-                className="w-44 rounded-lg"
+                className="w-full h-full object-cover rounded-lg"
               />
             </div>
             <div className="p-3 flex flex-col ">
@@ -79,6 +81,7 @@ const Listing = ({list}) => {
               )}
             </div>
           </div>
+          </Link>
     </div>
   )
 }
