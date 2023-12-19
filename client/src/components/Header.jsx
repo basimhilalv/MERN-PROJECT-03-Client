@@ -29,7 +29,7 @@ function Header() {
         <Link to="/">
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
             <span className="text-blue-400">basi.</span>
-            <span className="text-blue-200">space</span>
+            <span className="text-blue-200">play</span>
           </h1>
         </Link>
         <form

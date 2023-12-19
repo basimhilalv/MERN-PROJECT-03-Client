@@ -68,12 +68,12 @@ export const getAllListing = async (req, res, next) => {
       offer = { $in: [false, true] };
     }
 
-    let rent = req.query.rent;
+    let rent = req.query.forRent;
     if (rent === undefined || rent === "false") {
       rent = { $in: [false, true] };
     }
 
-    let sale = req.query.sale;
+    let sale = req.query.forSale;
     if (sale === undefined || sale === "false") {
       sale = { $in: [false, true] };
     }

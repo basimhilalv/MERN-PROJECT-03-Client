@@ -5,13 +5,12 @@ import { RxCross2 } from 'react-icons/rx';
 import { Link } from 'react-router-dom';
 
 const Listing = ({list}) => {
-    console.log(list)
   return (
 
     <div>
         <Link to={`/listing/${list._id}`}>
         <div className="flex flex-col sm:flex-row mx-auto p-6 ">
-            <div className="h-68 w-48 rounded-lg overflow-hidden">
+            <div className="h-68 w-48 rounded-lg overflow-hidden align-middle items-center">
               <img
                 src={list.imageUrls[0]}
                 alt="gameCover"

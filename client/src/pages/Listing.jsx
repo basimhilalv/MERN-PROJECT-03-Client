@@ -47,8 +47,6 @@ const Listing = () => {
     };
     fetchList();
   }, [params.id]);
-
-  console.log(listing);
   return (
     <main>
       {loading && (
