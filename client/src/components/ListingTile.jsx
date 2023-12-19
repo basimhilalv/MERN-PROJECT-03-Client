@@ -4,7 +4,7 @@ import { MdOutlineDone, MdCurrencyRupee } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
 import { Link } from 'react-router-dom';
 
-const Listing = ({list}) => {
+const ListingTile = ({list}) => {
   return (
 
     <div>
@@ -85,4 +85,4 @@ const Listing = ({list}) => {
   )
 }
 
-export default Listing
+export default ListingTile
