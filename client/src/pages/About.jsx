@@ -16,6 +16,7 @@ const About = () => {
         Our official branch is located in Kerala, India and you can contact us or send enquiries through basi.play@g.co.in and we respond immediately. 
         Go shopping everyday and get hitched in this world of gaming
       </p>
+      <p className="text-red-500 p-5 font-bold">This is not a marketing place, completely for educational purposes, do not misuse do not start sales without my knowledge. If anything suspicious activities detected with this site without my permission I will not be responsible for that. WARNING</p>
     </div>
   )
 }
