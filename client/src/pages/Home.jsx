@@ -60,7 +60,7 @@ const Home = () => {
           from us.
         </h1>
         <p className="text-gray-400 text-sm my-4">
-          Experience the virtual world of gaming for all. <br /> basi.play bring the
+          Experience the virtual world of gaming for all. <br /> baz.playz brings the
           best for your choice.{" "}
         </p>
         <Link to={"/search/"}>
