@@ -28,9 +28,9 @@ function Header() {
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-            <span className="text-white-400">baz.</span>
-            <span className="text-red-200">play</span>
-            <span className="text-white-200">z</span>
+            <span className="text-white-900">baz.</span>
+            <span className="text-red-900">play</span>
+            <span className="text-white-900">z</span>
           </h1>
         </Link>
         <form
